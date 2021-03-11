@@ -1,0 +1,129 @@
+import { getRepository, Repository, Not, IsNull } from 'typeorm';
+
+import IListParamsDTO from '@modules/movies/dtos/IListParamsDTO';
+import ICreateMovieDTO from '@modules/movies/dtos/ICreateMovieDTO';
+import IUpdateMovieDTO from '@modules/movies/dtos/IUpdateMovieDTO';
+
+import IMoviesRepository from '@modules/movies/repositories/IMoviesRepository';
+
+import Movie from '../entities/Movie';
+
+import AppError from '@shared/errors/AppError';
+import IGetMovieDTO from '@modules/movies/dtos/IGetMovieDTO';
+
+class MoviesRepository implements IMoviesRepository {
+  private ormRepository: Repository<Movie>;
+
+  constructor() {
+    this.ormRepository = getRepository(Movie);
+  }
+
+  public async get(id: string): Promise<IGetMovieDTO | undefined> {
+    const query = `
+      WITH avarage_movies AS (
+        SELECT movie_id, AVG(vote) as avarage_votes
+        FROM user_movie
+        GROUP BY movie_id
+      ),
+      SELECT movie.*, avarage_votes
+      FROM movies
+      LEFT JOIN avarage_movies USING(movie_id)
+      WHERE movie.id = :id 
+      AND movies.deleted_at IS NULL`;
+
+    const movies = await this.ormRepository.query(query, [id]);
+    const movie = movies[0];
+
+    return movie;
+  }
+
+  public async list({
+    name,
+    type,
+    director,
+    actor,
+  }: IListParamsDTO): Promise<Movie[]> {
+    let query = this.ormRepository
+      .createQueryBuilder()
+      .select('movies')
+      .from(Movie, 'movies')
+      .where('movies.deleted_at IS NULL');
+
+    if (name) {
+      query.andWhere('movies.name ILIKE :name', { name: `%${name}%` });
+    }
+    if (type) {
+      query.andWhere('movies.type ILIKE :type', { type: `%${type}%` });
+    }
+    if (director) {
+      query.andWhere('movies.director ILIKE :director', {
+        director: `%${director}%`,
+      });
+    }
+    if (actor) {
+      query.andWhere(':actor = ANY(movies.actor)', { actor });
+    }
+
+    const movies = await query.getRawMany();
+
+    return movies;
+  }
+
+  public async create({
+    name,
+    type,
+    director,
+    actors,
+  }: ICreateMovieDTO): Promise<Movie> {
+    const movie = this.ormRepository.create({ name, type, director, actors });
+
+    await this.ormRepository.save(movie);
+
+    return movie;
+  }
+
+  public async update({
+    id,
+    name,
+    type,
+    director,
+    actors,
+  }: IUpdateMovieDTO): Promise<Movie> {
+    const movie = await this.ormRepository.findOne(id, {
+      where: { deleted_at: Not(IsNull()) },
+    });
+
+    if (!movie) {
+      throw new AppError('Movie does not found', 404);
+    }
+
+    movie.name = name;
+    movie.type = type;
+    movie.director = director;
+    movie.actors = actors;
+
+    await this.ormRepository.save(movie);
+
+    return movie;
+  }
+
+  public async delete(id: string): Promise<Movie> {
+    const movie = await this.ormRepository.findOne(id);
+
+    if (!movie) {
+      throw new AppError('movie does not found', 404);
+    }
+
+    await this.ormRepository.update(id, { deleted_at: new Date() });
+
+    movie.deleted_at = new Date();
+
+    return movie;
+  }
+
+  public async save(movie: Movie): Promise<Movie> {
+    return this.ormRepository.save(movie);
+  }
+}
+
+export default MoviesRepository;
