@@ -58,11 +58,11 @@ Você deverá criar uma API que o site IMDb irá consultar para exibir seu conte
 
    # Criando container para o banco de dados PostgreSQL usando o docker
    $ docker run --name ioasys -e POSTGRES_PASSWORD=ioasys -p 5432:5432 -d postgres
-   
-   # Após a criação do container do banco de dados criar a database: filmes
 
    # Iniciando o banco de dados
    $ docker start ioasys
+   
+   # Após a criação do container do banco de dados criar a database: filmes
 
    # Criando tabelas no banco de dados a partir de migrations
    $ yarn typeorm migration:run
