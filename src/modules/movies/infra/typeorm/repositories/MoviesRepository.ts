@@ -1,4 +1,4 @@
-import { getRepository, Repository, Not, IsNull } from 'typeorm';
+import { getRepository, Repository, IsNull } from 'typeorm';
 
 import IListParamsDTO from '@modules/movies/dtos/IListParamsDTO';
 import ICreateMovieDTO from '@modules/movies/dtos/ICreateMovieDTO';
@@ -24,11 +24,11 @@ class MoviesRepository implements IMoviesRepository {
         SELECT movie_id, AVG(vote) as avarage_votes
         FROM user_movie
         GROUP BY movie_id
-      ),
-      SELECT movie.*, avarage_votes
+      )
+      SELECT movies.*, avarage_votes
       FROM movies
-      LEFT JOIN avarage_movies USING(movie_id)
-      WHERE movie.id = :id 
+      LEFT JOIN avarage_movies ON avarage_movies.movie_id = movies.id
+      WHERE movies.id = $1 
       AND movies.deleted_at IS NULL`;
 
     const movies = await this.ormRepository.query(query, [id]);
@@ -44,10 +44,11 @@ class MoviesRepository implements IMoviesRepository {
     actor,
   }: IListParamsDTO): Promise<Movie[]> {
     let query = this.ormRepository
-      .createQueryBuilder()
-      .select('movies')
-      .from(Movie, 'movies')
-      .where('movies.deleted_at IS NULL');
+      .createQueryBuilder('movies')
+      .select(
+        'id, name, type, actors, director, created_at, updated_at, deleted_at',
+      )
+      .where('deleted_at IS NULL');
 
     if (name) {
       query.andWhere('movies.name ILIKE :name', { name: `%${name}%` });
@@ -61,11 +62,11 @@ class MoviesRepository implements IMoviesRepository {
       });
     }
     if (actor) {
-      query.andWhere(':actor = ANY(movies.actor)', { actor });
+      query.andWhere(':actor = ANY(movies.actors)', { actor });
     }
 
     const movies = await query.getRawMany();
-
+    console.log('movies', query.getSql());
     return movies;
   }
 
@@ -90,7 +91,7 @@ class MoviesRepository implements IMoviesRepository {
     actors,
   }: IUpdateMovieDTO): Promise<Movie> {
     const movie = await this.ormRepository.findOne(id, {
-      where: { deleted_at: Not(IsNull()) },
+      where: { deleted_at: IsNull() },
     });
 
     if (!movie) {

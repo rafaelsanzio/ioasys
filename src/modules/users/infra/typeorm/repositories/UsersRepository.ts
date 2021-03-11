@@ -1,4 +1,4 @@
-import { getRepository, Repository, Not, IsNull } from 'typeorm';
+import { getRepository, Repository, IsNull } from 'typeorm';
 
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 
@@ -18,7 +18,7 @@ class UsersRepository implements IUsersRepository {
 
   public async findById(id: string): Promise<User | undefined> {
     const user = await this.ormRepository.findOne(id, {
-      where: { deleted_at: Not(IsNull()) },
+      where: { deleted_at: IsNull() },
     });
 
     return user;
@@ -26,7 +26,7 @@ class UsersRepository implements IUsersRepository {
 
   public async findByEmail(email: string): Promise<User | undefined> {
     const user = await this.ormRepository.findOne({
-      where: { email, deleted_at: Not(IsNull()) },
+      where: { email, deleted_at: IsNull() },
     });
 
     return user;
@@ -44,9 +44,9 @@ class UsersRepository implements IUsersRepository {
     return user;
   }
 
-  public async update({ id, name, email }: IUpdateUserDTO): Promise<User> {
+  public async update({ id, name }: IUpdateUserDTO): Promise<User> {
     const user = await this.ormRepository.findOne(id, {
-      where: { deleted_at: Not(IsNull()) },
+      where: { deleted_at: IsNull() },
     });
 
     if (!user) {
@@ -54,7 +54,6 @@ class UsersRepository implements IUsersRepository {
     }
 
     user.name = name;
-    user.email = email;
 
     await this.ormRepository.save(user);
 
@@ -63,7 +62,7 @@ class UsersRepository implements IUsersRepository {
 
   public async updateRole({ id, role }: IUpdateUserRoleDTO): Promise<User> {
     const user = await this.ormRepository.findOne(id, {
-      where: { deleted_at: Not(IsNull()) },
+      where: { deleted_at: IsNull() },
     });
 
     if (!user) {

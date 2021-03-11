@@ -17,16 +17,16 @@ class UserMovieRepository implements IUserMovieRepository {
     movie_id,
     vote,
   }: ICreateUserMovieDTO): Promise<UserMovie> {
-    const findUserMovie = this.ormRepository.findOne({ user_id, movie_id });
+    const query = `
+      INSERT INTO user_movie VALUES ($1, $2, $3) 
+      ON CONFLICT(user_id, movie_id) DO UPDATE SET vote = $3 
+      RETURNING *`;
 
-    let userMovie: UserMovie;
-    if (!findUserMovie) {
-      userMovie = this.ormRepository.merge(findUserMovie, { vote });
-    }
-
-    userMovie = this.ormRepository.create({ user_id, movie_id, vote });
-
-    await this.ormRepository.save(userMovie);
+    const userMovie = await this.ormRepository.query(query, [
+      user_id,
+      movie_id,
+      vote,
+    ]);
 
     return userMovie;
   }

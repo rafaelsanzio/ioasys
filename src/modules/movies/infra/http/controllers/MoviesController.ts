@@ -56,10 +56,10 @@ export default class MovieController {
     const updateMovie = container.resolve(ListMoviesServices);
 
     const movie = await updateMovie.execute({
-      name: String(name),
-      type: String(type),
-      actor: String(actor),
-      director: String(director),
+      name,
+      type,
+      actor,
+      director,
     });
 
     return response.json(movie);

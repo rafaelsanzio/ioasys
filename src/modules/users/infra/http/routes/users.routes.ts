@@ -18,7 +18,6 @@ usersRouter.put(
   celebrate({
     [Segments.BODY]: {
       name: Joi.string().min(2).required(),
-      email: Joi.string().email().required(),
     },
   }),
   usersConroller.update,
@@ -28,7 +27,7 @@ usersRouter.put(
   '/:id',
   celebrate({
     [Segments.BODY]: {
-      role: Joi.string().required().valid(['admin', 'user']),
+      role: Joi.string().required().valid('admin', 'user'),
     },
   }),
   authorization(permittedRoles),

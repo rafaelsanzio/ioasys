@@ -59,10 +59,10 @@ moviesRouter.get(
   '/',
   celebrate({
     [Segments.QUERY]: {
-      name: Joi.string().min(2).required(),
-      type: Joi.string().min(2).required(),
-      actor: Joi.string().min(2).required(),
-      director: Joi.string().min(2).required(),
+      name: Joi.string(),
+      type: Joi.string(),
+      actor: Joi.string(),
+      director: Joi.string(),
     },
   }),
   moviesController.list,

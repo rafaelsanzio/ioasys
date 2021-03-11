@@ -7,6 +7,7 @@ import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 
 import authConfig from '@shared/config/auth';
 import User from '../infra/typeorm/entities/User';
+import { SimpleConsoleLogger } from 'typeorm';
 
 interface IRequest {
   email: string;

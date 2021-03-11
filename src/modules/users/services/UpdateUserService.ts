@@ -10,7 +10,6 @@ import IUsersRepository from '../repositories/IUsersRepository';
 interface IRequest {
   id: string;
   name: string;
-  email: string;
 }
 
 @injectable()
@@ -20,23 +19,16 @@ class UpdateUserService {
     private usersRepository: IUsersRepository,
   ) {}
 
-  public async execute({ id, name, email }: IRequest): Promise<User> {
+  public async execute({ id, name }: IRequest): Promise<User> {
     const checkUserExists = await this.usersRepository.findById(id);
 
     if (!checkUserExists) {
       throw new AppError('User does not found', 404);
     }
 
-    const checkEmailUserExists = await this.usersRepository.findByEmail(email);
-
-    if (checkEmailUserExists) {
-      throw new AppError('This email has already registered', 400);
-    }
-
     const user = await this.usersRepository.update({
       id,
       name,
-      email,
     });
 
     return user;

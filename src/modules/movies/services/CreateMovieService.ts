@@ -10,7 +10,7 @@ import ICreateMovieDTO from '../dtos/ICreateMovieDTO';
 @injectable()
 class CreateMovieService {
   constructor(
-    @inject('MoviesRepositosy')
+    @inject('MoviesRepository')
     private moviesRepositosy: IMoviesRepository,
   ) {}
 

@@ -5,9 +5,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  ManyToMany,
 } from 'typeorm';
 
 import { Exclude } from 'class-transformer';
+import UserMovie from './UserMovie';
 
 @Entity('users')
 class User {
@@ -20,7 +22,7 @@ class User {
   @Column()
   email: string;
 
-  @Column()
+  @Column({ default: 'user' })
   role: string;
 
   @Exclude()
@@ -35,6 +37,9 @@ class User {
 
   @DeleteDateColumn()
   deleted_at: Date;
+
+  /*   @ManyToMany(() => UserMovie, userMovie => userMovie.user_id)
+  user_movie: UserMovie[]; */
 }
 
 export default User;

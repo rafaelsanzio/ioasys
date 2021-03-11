@@ -1,5 +1,5 @@
 import AppError from '@shared/errors/AppError';
-import User from '../infra/typeorm/entities/User';
+
 import FakeHashProvider from '../providers/HashProvider/fakes/FakeHashProvider';
 
 import FakeUsersRepository from '../repositories/fakes/FakeUsersRepository';
@@ -32,11 +32,9 @@ describe('Update User', () => {
     const user = await updateUser.execute({
       id: newUser.id,
       name: 'John Doe',
-      email: 'johndoe@mail.com',
     });
 
     expect(user.name).toBe('John Doe');
-    expect(user.email).toBe('johndoe@mail.com');
   });
 
   it('should not be able to update an user that does not exists', async () => {
@@ -44,24 +42,6 @@ describe('Update User', () => {
       updateUser.execute({
         id: 'non-exist-id',
         name: 'John Doe',
-        email: 'johndoe@mail.com',
-      }),
-    ).rejects.toBeInstanceOf(AppError);
-  });
-
-  it('should not be able to update an user that another email already exists', async () => {
-    const user = await createUser.execute({
-      name: 'John Doe',
-      email: 'johndoe@mail.com',
-      role: 'user',
-      password: '123456',
-    });
-
-    await expect(
-      updateUser.execute({
-        id: user.id,
-        name: 'John Doe',
-        email: 'johndoe@mail.com',
       }),
     ).rejects.toBeInstanceOf(AppError);
   });

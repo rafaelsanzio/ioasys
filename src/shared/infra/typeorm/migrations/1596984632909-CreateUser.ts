@@ -25,6 +25,7 @@ export class CreateUser1596984632909 implements MigrationInterface {
           {
             name: 'role',
             type: 'varchar',
+            default: 'user',
           },
           {
             name: 'password',
@@ -43,9 +44,14 @@ export class CreateUser1596984632909 implements MigrationInterface {
           {
             name: 'deleted_at',
             type: 'timestamptz',
+            isNullable: true,
           },
         ],
       }),
+    );
+
+    await queryRunner.query(
+      `INSERT INTO "users" (name, email, role, password) VALUES ('admin', 'admin@admin', 'admin', '$2a$08$Z/fQkgxM.nndxHWR8I2Ouuu6wsz18LGpYvjxzyVvSvXXREDHTuh0K')`,
     );
   }
 

@@ -1,6 +1,6 @@
 export default interface IListParamsDTO {
-  name?: string;
-  type?: string;
-  actor?: string;
-  director?: string;
+  name?: any;
+  type?: any;
+  actor?: any;
+  director?: any;
 }

@@ -9,14 +9,13 @@ import UpdateUserRoleService from '@modules/users/services/UpdateUserRoleService
 export default class UsersController {
   public async update(request: Request, response: Response): Promise<Response> {
     const { id } = request.user;
-    const { name, email } = request.body;
+    const { name } = request.body;
 
     const updateUser = container.resolve(UpdateUserService);
 
     const user = await updateUser.execute({
       id,
       name,
-      email,
     });
 
     return response.json(classToClass(user));

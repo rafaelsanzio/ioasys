@@ -1,13 +1,16 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToMany, PrimaryColumn } from 'typeorm';
+import User from './User';
 
 @Entity('user_movie')
 export default class UserMovie {
-  @Column()
   @PrimaryColumn()
+  @ManyToMany(() => User, user => user.id)
+  @JoinColumn({ name: 'user_id' })
   user_id: string;
 
-  @Column()
   @PrimaryColumn()
+  @ManyToMany(() => User, user => user.id)
+  @JoinColumn({ name: 'user_id' })
   movie_id: string;
 
   @Column({ nullable: true })

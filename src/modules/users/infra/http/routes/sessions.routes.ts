@@ -9,7 +9,7 @@ const sessionsController = new SessionsController();
 
 sessionsRouter.post(
   '/',
-  celebrate({
+  /* celebrate({
     [Segments.BODY]: {
       email: Joi.string().email().required(),
       password: JoiPasswordComplexity.string()
@@ -19,7 +19,7 @@ sessionsRouter.post(
         .minOfNumeric(2)
         .required(),
     },
-  }),
+  }), */
   sessionsController.create,
 );
 

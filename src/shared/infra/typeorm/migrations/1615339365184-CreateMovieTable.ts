@@ -42,6 +42,7 @@ export class CreateMovieTable1615339365184 implements MigrationInterface {
           {
             name: 'deleted_at',
             type: 'timestamptz',
+            isNullable: true,
           },
         ],
       }),

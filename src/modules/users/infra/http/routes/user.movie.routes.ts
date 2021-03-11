@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { celebrate, Segments, Joi } from 'celebrate';
 
-import authorization from '@shared/infra/middlewares/authorization';
+import authorizationUser from '@shared/infra/middlewares/authorizationUser';
 import authentication from '@shared/infra/middlewares/authentication';
 
 import UserMovieController from '../controllers/UserMovieController';
@@ -18,10 +18,10 @@ userMovieRouter.post(
   celebrate({
     [Segments.BODY]: {
       movie_id: Joi.string().uuid().required(),
-      email: Joi.number().min(0).max(4).required(),
+      vote: Joi.number().min(0).max(4).required(),
     },
   }),
-  authorization(permittedRoles),
+  authorizationUser(permittedRoles),
   userMovieConroller.create,
 );
 
