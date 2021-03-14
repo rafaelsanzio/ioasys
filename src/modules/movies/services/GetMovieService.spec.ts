@@ -18,7 +18,7 @@ describe('Get Movie', () => {
     createMovie = new CreateMovieService(fakeMoviesRepository);
   });
 
-  it('should be able to get a movie', async () => {
+  it('Should be able to get a movie', async () => {
     const movieOne = await createMovie.execute({
       name: 'New Film',
       type: 'New Terror',
@@ -36,7 +36,7 @@ describe('Get Movie', () => {
     expect(movie).toEqual(movieTwo);
   });
 
-  it('should not be able to get a movie that does not exists', async () => {
+  it('Should not be able to get a movie that does not exists', async () => {
     await expect(getMovie.execute('non-exist-id')).rejects.toBeInstanceOf(
       AppError,
     );

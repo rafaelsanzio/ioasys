@@ -1,4 +1,3 @@
-import AppError from '@shared/errors/AppError';
 import 'reflect-metadata';
 
 import { injectable, inject } from 'tsyringe';
@@ -14,12 +13,8 @@ class GetMovieServices {
     private moviesRepository: IMoviesRepository,
   ) {}
 
-  public async execute(id: string): Promise<Movie | undefined> {
+  public async execute(id: string): Promise<Movie> {
     const movie = await this.moviesRepository.get(id);
-
-    if (!movie) {
-      throw new AppError('Movie does not exists', 404);
-    }
 
     return movie;
   }

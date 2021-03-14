@@ -18,7 +18,7 @@ class MoviesRepository implements IMoviesRepository {
     this.ormRepository = getRepository(Movie);
   }
 
-  public async get(id: string): Promise<IGetMovieDTO | undefined> {
+  public async get(id: string): Promise<IGetMovieDTO> {
     const query = `
       WITH avarage_movies AS (
         SELECT movie_id, AVG(vote) as avarage_votes
@@ -33,6 +33,10 @@ class MoviesRepository implements IMoviesRepository {
 
     const movies = await this.ormRepository.query(query, [id]);
     const movie = movies[0];
+
+    if (!movie) {
+      throw new AppError('Movie does not found', 404);
+    }
 
     return movie;
   }
@@ -66,7 +70,7 @@ class MoviesRepository implements IMoviesRepository {
     }
 
     const movies = await query.getRawMany();
-    console.log('movies', query.getSql());
+
     return movies;
   }
 
@@ -112,7 +116,7 @@ class MoviesRepository implements IMoviesRepository {
     const movie = await this.ormRepository.findOne(id);
 
     if (!movie) {
-      throw new AppError('movie does not found', 404);
+      throw new AppError('Movie does not found', 404);
     }
 
     await this.ormRepository.update(id, { deleted_at: new Date() });

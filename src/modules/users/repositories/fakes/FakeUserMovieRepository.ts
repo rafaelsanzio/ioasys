@@ -1,10 +1,8 @@
 import UserMovie from '@modules/users/infra/typeorm/entities/UserMovie';
-import Movie from '@modules/movies/infra/typeorm/entities/Movie';
 
 import ICreateUserMovieDTO from '@modules/users/dtos/ICreateUserMovieDTO';
 
 import IUserMovieRepository from '../IUserMovieRepository';
-import AppError from '@shared/errors/AppError';
 
 export default class FakeUserMovieRepository implements IUserMovieRepository {
   private userMovies: UserMovie[] = [];

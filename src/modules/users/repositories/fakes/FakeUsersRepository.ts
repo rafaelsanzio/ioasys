@@ -41,21 +41,14 @@ class FakeUsersRepository implements IUsersRepository {
     return user;
   }
 
-  public async update({ id, name, email }: IUpdateUserDTO): Promise<User> {
+  public async update({ id, name }: IUpdateUserDTO): Promise<User> {
     const user = this.users.find(user => user.id === id);
 
     if (!user) {
       throw new AppError('User does not found', 404);
     }
 
-    const checkEmailUserExists = this.users.find(user => user.email === email);
-
-    if (checkEmailUserExists) {
-      throw new AppError('This email has already registered', 400);
-    }
-
     user.name = name;
-    user.email = email;
 
     return user;
   }

@@ -15,12 +15,6 @@ class DeleteMovieService {
   ) {}
 
   public async execute(id: string): Promise<Movie> {
-    const checkMovieExists = await this.moviesRepository.get(id);
-
-    if (!checkMovieExists) {
-      throw new AppError('Movie does not exists', 494);
-    }
-
     const movie = await this.moviesRepository.delete(id);
 
     return movie;

@@ -2,7 +2,6 @@ import 'reflect-metadata';
 
 import { injectable, inject } from 'tsyringe';
 
-import AppError from '@shared/errors/AppError';
 import Movie from '../infra/typeorm/entities/Movie';
 
 import IMoviesRepository from '../repositories/IMoviesRepository';
@@ -22,12 +21,6 @@ class UpdateMovieService {
     actors,
     director,
   }: IUpdateMovieDTO): Promise<Movie> {
-    const checkMovieExists = await this.moviesRepository.get(id);
-
-    if (!checkMovieExists) {
-      throw new AppError('Movie does not found', 404);
-    }
-
     const movie = await this.moviesRepository.update({
       id,
       name,

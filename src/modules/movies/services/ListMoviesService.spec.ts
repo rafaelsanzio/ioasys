@@ -1,5 +1,3 @@
-import AppError from '@shared/errors/AppError';
-
 import FakeMoviesRepository from '../repositories/fakes/FakeMoviesRepository';
 
 import CreateMovieService from './CreateMovieService';

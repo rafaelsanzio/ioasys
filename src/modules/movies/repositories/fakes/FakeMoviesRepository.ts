@@ -16,7 +16,7 @@ class FakeMoviesRepository implements IMoviesRepository {
   private movies: Movie[] = [];
   private userMovies: UserMovie[] = [];
 
-  public async get(id: string): Promise<IGetMovieDTO | undefined> {
+  public async get(id: string): Promise<IGetMovieDTO> {
     const movie = this.movies.find(
       movie => movie.id === id && movie.deleted_at === undefined,
     );
@@ -45,7 +45,9 @@ class FakeMoviesRepository implements IMoviesRepository {
     actor,
     director,
   }: IListParamsDTO): Promise<Movie[]> {
-    let movies = this.movies.filter(movie => movie.deleted_at === undefined);
+    let movies = this.movies.filter(
+      movie => movie.deleted_at === undefined || movie.deleted_at === null,
+    );
 
     if (name) {
       movies = movies.filter(movie => movie.name.match(name));
@@ -85,7 +87,11 @@ class FakeMoviesRepository implements IMoviesRepository {
     actors,
     director,
   }: IUpdateMovieDTO): Promise<Movie> {
-    const movie = this.movies.find(movie => movie.id === id);
+    const movie = this.movies.find(
+      movie =>
+        movie.id === id &&
+        (movie.deleted_at !== null || movie.deleted_at !== undefined),
+    );
 
     if (!movie) {
       throw new AppError('Movie does not found', 404);
@@ -100,7 +106,9 @@ class FakeMoviesRepository implements IMoviesRepository {
   }
 
   public async delete(id: string): Promise<Movie> {
-    const movie = this.movies.find(movie => movie.id === id);
+    const movie = this.movies.find(
+      movie => movie.id === id && movie.deleted_at === undefined,
+    );
 
     if (!movie) {
       throw new AppError('Movie does not found', 404);
