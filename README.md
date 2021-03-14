@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img style="background-color: #312e38; border-radius: 10px;" alt="smartmei-logo" src="https://image4.owler.com/logo/smartmei_owler_20171107_193520_original.png" />
+  <img style="background-color: #312e38; border-radius: 10px;" alt="smartmei-logo" src="https://media.glassdoor.com/sqll/1728220/ioasys-squarelogo-1586796589831.png" />
   <p align="center">
     <a href="https://nodejs.org/en/">
       <img src="https://img.shields.io/badge/-NodeJS-006400?style=flat&logo=Node.js&logoColor=#339933" />
@@ -16,15 +16,21 @@
 
 ## 🔖 Sobre o projeto 
 
-O projeto **API de empréstimos de livros** desenvolvido para teste de programador [SmartMEI](https://www.smartmei.com.br/ "SmartMEI"), tendo como objetivo construir um serviço para empréstimos de livros.
+Você deverá criar uma API que o site IMDb irá consultar para exibir seu conteúdo, sua API deve conter as seguintes features:
 
 - **Features** 
-  - Cadastro de Usuário - ✅
-  - Login - ✅
-  - Cadastro de um livro para um usuário - ✅
-  - Empréstimo de livro para outro usuário - ✅
-  - Devolver livro - ✅
-  - Histórico de livros emprestados - ✅
+  - Usuário ✅
+    - Permissões: Admin e User
+    - Cadastro
+    - Edição
+    - Exclusão lógica (Desativação)
+
+  - Filmes ✅
+
+    - Cadastro (Somente um usuário administrador poderá realizar esse cadastro)
+    - Voto (A contagem dos votos será feita por usuário de 0-4 que indica quanto o usuário gostou do filme)
+    - Listagem (deverá ter filtro por diretor, nome, gênero e/ou atores)
+    - Detalhe do filme trazendo todas as informações sobre o filme, inclusive a média dos votos
 
 
 ## 💻 Tecnologias 
@@ -39,22 +45,24 @@ O projeto **API de empréstimos de livros** desenvolvido para teste de programad
  
 ## ▶️ Getting Started 
 
- - **Passo 1️⃣** : git clone do projeto [SmartMEI](https://github.com/rafaelsanzio/smartmei "SmartMEI")
+ - **Passo 1️⃣** : git clone do projeto [ioasys](https://github.com/rafaelsanzio/ioasys "ioasys")
  - **Passo 2️⃣** : executar a instalação do [Node](https://nodejs.org/en/ 'Node') e [Docker](https://www.docker.com/ "Docker")
 
  - **Passo 3️⃣** : rodando a aplicação executando os seguintes comandos:
   ```bash
    # Navegando até a pasta do projeto
-   $ cd smartmei
+   $ cd ioasys
 
    # Instalando todas as depêndencias necessárias
    $ npm install ou yarn install
 
    # Criando container para o banco de dados PostgreSQL usando o docker
-   $ docker run --name smartmei -e POSTGRES_PASSWORD=smartmei -p 5432:5432 -d postgres
+   $ docker run --name ioasys -e POSTGRES_PASSWORD=ioasys -p 5432:5432 -d postgres
 
    # Iniciando o banco de dados
-   $ docker start smartmei
+   $ docker start ioasys
+   
+   # Após a criação do container do banco de dados criar a database: filmes
 
    # Criando tabelas no banco de dados a partir de migrations
    $ yarn typeorm migration:run
@@ -66,46 +74,9 @@ O projeto **API de empréstimos de livros** desenvolvido para teste de programad
    $ npm test ou yarn test
 ```
 
-## ⚙️ Exemplificando rotas
 
- ```json
-/* Requisição de login */
-🟢 POST - /sessions
-params: {
-  "email": "rafaelsanzio27@gmail.com",
-  "password": "123456"
-}
-
-/* Requisição de criação de usuário */
-🟢 POST - /users
-params: {
-  "name": "Rafael Sanzio",
-  "email": "rafaelsanzio@gmail.com",
-  "password": "123456"
-}
-
-/* Requisições de histórico de empréstimo/profile do usuário do usuário logado - necessário token de autenticação*/
-🟣 GET - /profile
-
-/* Requisição de criação de livro - necessário token de autenticação*/
-🟢 POST - /books
-params: {
-  "name": "Harry Potter"
-}
-
-/* Requisição de empréstimo de livro - necessário token de autenticação */
-🟢 POST - /book-transaction
-params: {
-  "book_id": "22586a0b-af87-4c4b-b6b3-2889e5f9a183",
-  "to_user_id": "b9562a67-c89d-460e-bc3a-4ed3fbf2235d"
-}
-
-/* Requisição de devolução de livro - necessário token de autenticação*/
-🟠 PUT - /book-transaction/{id}
-```
-
-#### ⚠️ Observação.
-  - Arquivo [Insonmia_routes.json](https://github.com/rafaelsanzio/smartmei/blob/master/Insomnia_routes.json "Insonmia_routes.json") contém as rotas feitas para melhor visualização, basta importar no [Insomnia](https://insomnia.rest/download/ "Insomnia") e as rotas estaram visíveis.
+#### ⚠️ Rotas .
+  - O arquivo ioasys-insonmia.json na aplicação contém as rotas feitas para melhor visualização, basta importar no [Insomnia](https://insomnia.rest/download/ "Insomnia") e as rotas estaram visíveis.
 
 ## ㊗️ Considerações 
 - Projeto desenvolvido by:
