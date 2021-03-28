@@ -2,16 +2,12 @@ import FakeMoviesRepository from '@modules/movies/repositories/fakes/FakeMoviesR
 import FakeUserMovieRepository from '../repositories/fakes/FakeUserMovieRepository';
 
 import CreateUserMovieService from './CreateUserMovieService';
-import CreateMovieService from '@modules/movies/services/CreateMovieService';
 import AppError from '@shared/errors/AppError';
 import Movie from '@modules/movies/infra/typeorm/entities/Movie';
 
 let fakeUserMovieRepository: FakeUserMovieRepository;
 let fakeMoviesRepository: FakeMoviesRepository;
 let createUserMovie: CreateUserMovieService;
-let createMovie: CreateMovieService;
-
-let movie: Movie;
 
 describe('Create User Movie', () => {
   beforeEach(async () => {
@@ -22,18 +18,16 @@ describe('Create User Movie', () => {
       fakeUserMovieRepository,
       fakeMoviesRepository,
     );
+  });
 
-    createMovie = new CreateMovieService(fakeMoviesRepository);
-
-    movie = await createMovie.execute({
+  it('should be able to create a new user movie', async () => {
+    const movie = await fakeMoviesRepository.create({
       name: 'John filme',
       type: 'John type',
       actors: ['John Doe', 'John Three'],
       director: 'John Director',
     });
-  });
 
-  it('should be able to create a new user movie', async () => {
     const userMovie = await createUserMovie.execute({
       user_id: 'user_id',
       movie_id: movie.id,
@@ -45,6 +39,13 @@ describe('Create User Movie', () => {
   });
 
   it('should be able to update a vote for a movie', async () => {
+    const movie = await fakeMoviesRepository.create({
+      name: 'John filme',
+      type: 'John type',
+      actors: ['John Doe', 'John Three'],
+      director: 'John Director',
+    });
+
     await createUserMovie.execute({
       user_id: 'user_id',
       movie_id: movie.id,
@@ -68,5 +69,34 @@ describe('Create User Movie', () => {
         vote: 0,
       }),
     ).rejects.toBeInstanceOf(AppError);
+  });
+
+  it('should not be able to create a user vote with a movie deleted or inexistent 2', async () => {
+    jest.mock('fakeMoviesRepository', () => ({
+      async get(): Promise<Movie> {
+        return new Promise(resolve =>
+          resolve({
+            id: 'xxxx',
+            name: 'John filme',
+            type: 'John type',
+            actors: ['John Doe', 'John Three'],
+            director: 'John Director',
+            created_at: new Date(),
+            updated_at: new Date(),
+            deleted_at: new Date(),
+          }),
+        );
+      },
+    }));
+
+    const movieSpy = jest
+      .spyOn(fakeMoviesRepository, 'get')
+      .mockReturnValueOnce(
+        new Promise((resolve, reject) =>
+          reject(new AppError('Movie does not exists or it has been deleted')),
+        ),
+      );
+
+    await expect(movieSpy).rejects.toBeInstanceOf(AppError);
   });
 });

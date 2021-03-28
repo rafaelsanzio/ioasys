@@ -22,7 +22,7 @@ class FakeMoviesRepository implements IMoviesRepository {
     );
 
     if (!movie) {
-      throw new AppError('Movie does not found', 404);
+      throw new AppError('Movie does not exists or it has been deleted', 404);
     }
 
     const avarage_votes = this.userMovies.reduce(
